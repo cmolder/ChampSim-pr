@@ -100,6 +100,8 @@ clean:
 	@-$(RM) inc/ooo_cpu_modules.h
 	@-$(RM) src/core_inst.cc
 	@-$(RM) $(test_main_name)
+	@-$(RM) absolute.options
+	@-$(RM) _configuration.mk
 
 # Remove all compile_commands.json files
 compile_commands_clean:
