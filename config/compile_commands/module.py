@@ -40,7 +40,7 @@ def create_module_compile_command(
             *get_options(champsim_dir / "global.options"),
             *get_options(champsim_dir / "absolute.options"),
             *get_options(champsim_dir / "module.options"),
-            f"-I{config_dir}",
+            f"-I{config_dir}/inc",
             "-c",
             "-o",
             f"{object_file.absolute()}",

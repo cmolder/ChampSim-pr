@@ -36,7 +36,7 @@ def create_inc_compile_command(
             os.environ.get("CXX", "g++"),
             *get_options(champsim_dir / "global.options"),
             *get_options(champsim_dir / "absolute.options"),
-            f"-I{config_dir}",
+            f"-I{config_dir}/inc",
         ],
         directory=champsim_dir,
         file=file,

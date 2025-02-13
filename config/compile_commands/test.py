@@ -41,7 +41,7 @@ def create_test_compile_command(
             os.environ.get("CXX", "g++"),
             *get_options(champsim_dir / "global.options"),
             *get_options(champsim_dir / "absolute.options"),
-            f"-I{config_dir}",
+            f"-I{config_dir}/inc",
             "-I.",
             "-DCHAMPSIM_TEST_BUILD",
             "-g3",

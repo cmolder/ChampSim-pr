@@ -16,7 +16,7 @@ override REPLACEMENT_ROOT += $(addsuffix /replacement,$(MODULE_ROOT))
 
 # vcpkg integration
 TRIPLET_DIR = $(patsubst %/,%,$(firstword $(filter-out $(ROOT_DIR)/vcpkg_installed/vcpkg/, $(wildcard $(ROOT_DIR)/vcpkg_installed/*/))))
-override CPPFLAGS += -I$(OBJ_ROOT)
+override CPPFLAGS += -I$(OBJ_ROOT)/inc
 override LDFLAGS  += -L$(TRIPLET_DIR)/lib -L$(TRIPLET_DIR)/lib/manual-link
 override LDLIBS   += -lCLI11 -llzma -lz -lbz2 -lfmt
 
@@ -89,7 +89,7 @@ parent_dir = $(patsubst %/,%,$(dir $1))
 
 .DEFAULT_GOAL := all
 
-generated_files = $(OBJ_ROOT)/module_decl.inc $(OBJ_ROOT)/legacy_bridge.h
+generated_files = $(OBJ_ROOT)/inc/module_decl.inc $(OBJ_ROOT)/inc/legacy_bridge.h
 module_dirs = $(foreach d,$(BRANCH_ROOT) $(BTB_ROOT) $(PREFETCH_ROOT) $(REPLACEMENT_ROOT),$(call relative_path,$(abspath $d),$(ROOT_DIR)))
 
 # Remove all intermediate files
@@ -199,11 +199,11 @@ endif
 # Get prerequisites for module_decl.inc
 # $1 - object file paths
 module_decl_prereqs = $(foreach mod,$(call get_module_src_dir,$1),$(call maybe_legacy_file,$(mod),legacy_bridge.inc))
-$(OBJ_ROOT)/module_decl.inc: $$(call module_decl_prereqs,$$(dir $(base_module_objs)) $$(prereq_for_generated)) | $$(dir $$@)
+$(OBJ_ROOT)/inc/module_decl.inc: $$(call module_decl_prereqs,$$(dir $(base_module_objs)) $$(prereq_for_generated)) | $$(dir $$@)
 	@$(call include_sequence_lines, CHAMPSIM_LEGACY_MODULE_DECL)
 
 legacy_bridge_prereqs = $(foreach mod,$(call get_module_src_dir,$1),$(call maybe_legacy_file,$(mod),legacy_bridge.h))
-$(OBJ_ROOT)/legacy_bridge.h: $$(call legacy_bridge_prereqs,$$(dir $(base_module_objs)) $$(prereq_for_generated)) | $$(dir $$@)
+$(OBJ_ROOT)/inc/legacy_bridge.h: $$(call legacy_bridge_prereqs,$$(dir $(base_module_objs)) $$(prereq_for_generated)) | $$(dir $$@)
 	@$(call include_sequence_lines, CHAMPSIM_LEGACY_BRIDGE)
 
 # Generated configuration makefile contains:

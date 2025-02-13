@@ -18,7 +18,7 @@ import itertools
 import operator
 import os
 import json
-import pathlib
+from pathlib import Path
 
 from .makefile import get_makefile_lines
 from .instantiation_file import get_instantiation_lines
@@ -157,15 +157,15 @@ class Fragment:
             print('Writing objects to', objdir_name)
 
         # Touch 'path/to/__legacy__' to ensure makefile will generate legacy files
-        for legacy_marker in (pathlib.Path(module['path'], '__legacy__') for module in joined_module_info.values() if module.get('legacy')):
+        for legacy_marker in (Path(module['path'], '__legacy__') for module in joined_module_info.values() if module.get('legacy')):
             if verbose:
                 print('Touching file:', str(legacy_marker))
             legacy_marker.touch()
 
         fileparts = [
             # Instantiation file
-            (os.path.join(objdir_name, 'core_inst.inc'), cxx_file(get_instantiation_header(len(elements['cores']), config_file, build_id=build_id))),
-            (os.path.join(objdir_name, 'core_inst.cc.inc'), cxx_file(get_instantiation_lines(build_id=build_id, **elements))),
+            (os.path.join(objdir_name, 'inc', 'core_inst.inc'), cxx_file(get_instantiation_header(len(elements['cores']), config_file, build_id=build_id))),
+            (os.path.join(objdir_name, 'inc', 'core_inst.cc.inc'), cxx_file(get_instantiation_lines(build_id=build_id, **elements))),
 
             # Makefile generation
             (os.path.join(makedir_name, '_configuration.mk'), (
@@ -178,6 +178,7 @@ class Fragment:
     def write(self, verbose=False):
         ''' Write the internal series of fragments to file. '''
         for fname, fcontents in self.fileparts:
+            Path(fname).parent.mkdir(parents=True, exist_ok=True)
             write_if_different(fname, '\n'.join(l.rstrip() for l in fcontents), verbose=verbose)
 
     def file_parts(self):
