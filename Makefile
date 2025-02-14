@@ -307,6 +307,7 @@ src_compile_commands_file = $(base_source_dir)/compile_commands.json
 inc_compile_commands_file = $(base_include_dir)/compile_commands.json
 test_compile_commands_file = $(test_source_dir)/compile_commands.json
 module_compile_commands_files = $(foreach mod,$(module_dirs),$(foreach subdir,$(call ls_dirs,$(mod)),$(subdir)/compile_commands.json))
+config_compile_commands_file = $(OBJ_ROOT)/inc/compile_commands.json
 
 $(src_compile_commands_file): $(call rwildcard,$(base_source_dir),*.cc)
 	python3 $(ROOT_DIR)/config/compile_commands/src.py --build-id $(build_id) --champsim-dir $(ROOT_DIR) --config-dir $(OBJ_ROOT)
@@ -320,7 +321,10 @@ $(test_compile_commands_file): $(call rwildcard,$(test_source_dir),*.cc)
 $(module_compile_commands_files): $(call rwildcard,$(call parent_dir,$@),*.cc)
 	python3 $(ROOT_DIR)/config/compile_commands/module.py --module-dir $(call parent_dir,$@) --champsim-dir $(ROOT_DIR) --config-dir $(OBJ_ROOT)
 
-compile_commands: $(src_compile_commands_file) $(inc_compile_commands_file) $(test_compile_commands_file) $(module_compile_commands_files)
+$(config_compile_commands_file): $(call rwildcard,$(OBJ_ROOT)/inc,*.h) $(call rwildcard,$(OBJ_ROOT)/inc,*.inc)
+	python3 $(ROOT_DIR)/config/compile_commands/config.py --champsim-dir $(ROOT_DIR) --config-dir $(OBJ_ROOT)
+
+compile_commands: $(src_compile_commands_file) $(inc_compile_commands_file) $(test_compile_commands_file) $(module_compile_commands_files) $(config_compile_commands_file)
 
 # Tests: build and run
 ifdef TEST_NUM
