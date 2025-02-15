@@ -324,7 +324,7 @@ $(module_compile_commands_files): $(call rwildcard,$(call parent_dir,$@),*.cc)
 $(config_compile_commands_file): $(call rwildcard,$(OBJ_ROOT)/inc,*.h) $(call rwildcard,$(OBJ_ROOT)/inc,*.inc)
 	python3 $(ROOT_DIR)/config/compile_commands/config.py --champsim-dir $(ROOT_DIR) --config-dir $(OBJ_ROOT)
 
-compile_commands: $(src_compile_commands_file) $(inc_compile_commands_file) $(test_compile_commands_file) $(module_compile_commands_files) $(config_compile_commands_file)
+compile_commands: absolute.options $(src_compile_commands_file) $(inc_compile_commands_file) $(test_compile_commands_file) $(module_compile_commands_files) $(config_compile_commands_file)
 
 # Tests: build and run
 ifdef TEST_NUM
